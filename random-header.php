@@ -6,3 +6,5 @@
  * Author: Sean Kelly
  * License: GPL2+
  */
+
+defined('ABSPATH') or die("This file must be used with WordPress.");
