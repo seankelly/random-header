@@ -10,7 +10,10 @@
 defined('ABSPATH') or die("This file must be used with WordPress.");
 
 class RandomHeader {
+	private $header_url;
+
 	public function __construct() {
+		$this->header_url = null;
 		add_action('init', array($this, 'init'));
 	}
 
@@ -21,23 +24,26 @@ class RandomHeader {
 	}
 
 	public function theme_mod_header_image($header_url) {
+		if (!is_null($this->header_url)) {
+			return $this->header_url;
+		}
+
 		add_filter('posts_where', array($this, media_where_filter), 10, 2);
 		$images = new WP_Query(array(
 			'post_type' => 'attachment',
 			'post_status' => 'inherit',
 			'post_mime_type' => 'image',
 			'orderby' => 'rand',
-			'posts_per_page' => 10,
+			'posts_per_page' => 1,
 			'theme_mod_header_image_title' => 'wgom banner',
 		));
 		remove_filter('posts_where', array($this, media_where_filter), 10, 2);
 
-		echo "<!-- {$images->request} -->";
-
-		foreach ($images->posts as $image) {
-			$image_url = wp_get_attachment_url($image->ID);
-			echo "<!--  {$image->post_title} : $image_url -->\n";
+		if ($images->have_posts()) {
+			$this->header_url = wp_get_attachment_url($images->posts[0]->ID);
+			return $this->header_url;
 		}
+
 	}
 
 	public function media_where_filter($where, &$query) {
