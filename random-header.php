@@ -35,7 +35,7 @@ class RandomHeader {
 			'post_mime_type' => 'image',
 			'orderby' => 'rand',
 			'posts_per_page' => 1,
-			'theme_mod_header_image_title' => 'wgom banner',
+			'theme_mod_header_image_title' => 'active WGOM banner',
 		));
 		remove_filter('posts_where', array($this, media_where_filter), 10, 2);
 
