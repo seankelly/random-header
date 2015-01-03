@@ -10,6 +10,8 @@
 defined('ABSPATH') or die("This file must be used with WordPress.");
 
 class RandomHeader {
+	private $menu_slug = 'random-header';
+
 	private $header_url;
 
 	public function __construct() {
@@ -20,6 +22,8 @@ class RandomHeader {
 	public function init() {
 		if (current_theme_supports('custom-header')) {
 			add_action('theme_mod_header_image', array($this, 'theme_mod_header_image'));
+			add_action('admin_init', array($this, 'add_settings'));
+			add_action('admin_menu', array($this, 'admin_menu'));
 		}
 	}
 
@@ -56,6 +60,61 @@ class RandomHeader {
 				. '%\'';
 		}
 		return $where;
+	}
+
+	/**
+	 * Add a submenu under the Settings menu.
+	 */
+	public function admin_menu() {
+		add_options_page(
+			'Random Header',
+			'Random Header',
+			'manage_options',
+			$this->menu_slug,
+			array($this, 'cb_admin_menu')
+		);
+	}
+
+	public function add_settings() {
+		// Do not want a title or a callback for the section. There is
+		// only a single setting so adding extra output from the
+		// section just adds clutter.
+		add_settings_section(
+			'default',
+			'',
+			'',
+			$this->menu_slug
+		);
+
+		add_settings_field(
+			'random-header-media-prefix',
+			'Media prefix',
+			array($this, 'cb_settings_field'),
+			$this->menu_slug
+		);
+
+		register_setting($this->menu_slug, 'random-header-media-prefix');
+	}
+
+	public function cb_admin_menu() {
+	?>
+	<div class="wrap">
+	<h2>Random Header</h2>
+	<form method="post" action="options.php">
+	<?php
+		settings_fields($this->menu_slug);
+		do_settings_sections($this->menu_slug);
+		submit_button();
+	?>
+	</form>
+	</div>
+	<?php
+	}
+
+	public function cb_settings_field($args) {
+		$option_name = 'random-header-media-prefix';
+		$option_value = get_option($option_name);
+		echo "<input id=\"$option_name\" name=\"$option_name\" value=\"$option_value\" type=\"text\"></input>";
 	}
 }
 
