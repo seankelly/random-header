@@ -42,7 +42,7 @@ class RandomHeader {
 			'post_mime_type' => 'image',
 			'orderby' => 'rand',
 			'posts_per_page' => 1,
-			'theme_mod_header_image_title' => 'active WGOM banner',
+			'theme_mod_header_image_title' => get_option('random-header-media-prefix'),
 		));
 		remove_filter('posts_where', array($this, media_where_filter), 10, 2);
 
