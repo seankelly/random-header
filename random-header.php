@@ -17,6 +17,24 @@ class RandomHeader {
 
 	private $header_url;
 
+	public static function activate() {
+		# TODO: Make this more generic.
+		update_option('random-header-media-prefix', 'active header');
+	}
+
+	public static function deactivate() {
+	}
+
+	public static function uninstall() {
+		if (__FILE__ !== WP_UNINSTALL_PLUGIN) {
+			return;
+		}
+
+		foreach (self::$options as $opt) {
+			delete_option($opt);
+		}
+	}
+
 	public function __construct() {
 		$this->header_url = null;
 		add_action('init', array($this, 'init'));
