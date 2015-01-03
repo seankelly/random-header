@@ -11,6 +11,9 @@ defined('ABSPATH') or die("This file must be used with WordPress.");
 
 class RandomHeader {
 	private $menu_slug = 'random-header';
+	private $options = array(
+		'random-header-media-prefix',
+	);
 
 	private $header_url;
 
@@ -86,14 +89,19 @@ class RandomHeader {
 			$this->menu_slug
 		);
 
-		add_settings_field(
-			'random-header-media-prefix',
-			'Media prefix',
-			array($this, 'cb_settings_field'),
-			$this->menu_slug
-		);
-
-		register_setting($this->menu_slug, 'random-header-media-prefix');
+		foreach ($this->options as $opt) {
+			add_settings_field(
+				$opt,
+				'Media prefix',
+				array($this, 'cb_settings_field'),
+				$this->menu_slug,
+				'default',
+				array(
+					$opt,
+				)
+			);
+			register_setting($this->menu_slug, $opt);
+		}
 	}
 
 	public function cb_admin_menu() {
@@ -112,7 +120,7 @@ class RandomHeader {
 	}
 
 	public function cb_settings_field($args) {
-		$option_name = 'random-header-media-prefix';
+		$option_name = $args[0];
 		$option_value = get_option($option_name);
 		echo "<input id=\"$option_name\" name=\"$option_name\" value=\"$option_value\" type=\"text\"></input>";
 	}
