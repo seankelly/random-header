@@ -122,7 +122,7 @@ class RandomHeader {
 	public function cb_settings_field($args) {
 		$option_name = $args[0];
 		$option_value = get_option($option_name);
-		echo "<input id=\"$option_name\" name=\"$option_name\" value=\"$option_value\" type=\"text\"></input>";
+		echo "<input id='$option_name' name='$option_name' value='" . esc_attr($option_value) . "' type='text'></input>";
 	}
 }
 
